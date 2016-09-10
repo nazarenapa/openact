@@ -120,7 +120,7 @@ nginx:
             server_name: openact.dev
             server_aliases:
                 - www.openact.dev
-            www_root: /var/www/openact
+            www_root: /var/www/web
             listen_port: '80'
             index_files:
                 - index.html

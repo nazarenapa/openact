@@ -9,7 +9,7 @@
         "mandrill/mandrill": "1.0.*",
         "symfony/security": "~2.7",
         "symfony/debug": "~2.7",
-        "symfony/twig-bridge": "~2.7",
+        "symfony/twig-bridge": "~2.7"
     },
     "autoload": {
         "psr-4": {
