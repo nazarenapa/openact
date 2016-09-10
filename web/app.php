@@ -2,6 +2,9 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+// repositories
+use Openact\controller\ApiController;
+
 // symfony components
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,5 +30,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 $app->get('/', function ()  use ($app) {
     return $app['twig']->render('home.twig');
 });
+
+$apiController = new ApiController($app);
+$app->mount('/API', $apiController->build());
+
 
 return $app;
