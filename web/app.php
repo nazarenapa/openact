@@ -9,24 +9,51 @@ use Openact\controller\ApiController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// setup
 $app = new Silex\Application();
-$app['debug'] = true;
 
-if (!empty($dbUrl)) {
-    define('ENVIRONMENT', 'production');
-} else {
-    define('ENVIRONMENT', 'development');
-}
+// setup production / development variables
 
-if (ENVIRONMENT == 'production') {
+$dbUrl = getenv("DATABASE_URL");
+$isOnHeroku = !empty($dbUrl);
+
+if ($isOnHeroku) {
+	define('ENVIRONMENT', 'production');
     $app['debug'] = false;
+    $parsedDbUrl = parse_url($dbUrl);
+    $defaultDbConfiguration = [
+	    'driver'    => 'pdo_pgsql',
+	    'host'      => $parsedDbUrl['host'],
+	    'dbname'    => substr($parsedDbUrl['path'],1),
+	    'user'      => $parsedDbUrl['user'],
+	    'password'  => $parsedDbUrl['pass'],
+	    'charset'   => 'utf8'
+	];
+} else {
+	define('ENVIRONMENT', 'development');
+	$app['debug'] = true;
+	$defaultDbConfiguration = [
+	    'driver'    => 'pdo_pgsql',
+	    'host'      => 'localhost',
+	    'dbname'    => 'openact',
+	    'user'      => 'openact',
+	    'password'  => 'openact',
+	    'charset'   => 'utf8'
+	];
 }
+
+// services registration
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => $defaultDbConfiguration,
+));
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 
+$app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+
+// routes
 $app->get('/', function ()  use ($app) {
     return $app['twig']->render('home.twig');
 });

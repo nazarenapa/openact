@@ -1,0 +1,53 @@
+{% extends 'layout.twig' %}
+{% block title %}Openact{% endblock %}
+{% block description %}Il miglior open actor consultation{% endblock %}
+{% block header %}
+	OpenAct
+{% endblock %}
+{% block content %}
+	<h1>Questo è il potentissimo OpenAct!</h1>
+	<br/>
+
+	<h2>cittadino</h2>
+	<input id="citizenUuid" placeholder="uuid" />
+	<button id="showCitizen">mostra cittadino</button>
+	<div id="cittadino">
+		<p>first name: <span id="citizenFirstName"></span></p>
+		<p>last name: <span id="citizenLastName"></span></p>
+	</div>
+	<br/>
+
+	<h2>tavolo</h2>
+	<br/>
+	
+	<h2>post-it</h2>
+	<br/>
+
+	<h2>mini storie</h2>
+	<br/>
+
+	<h2>raw vision</h2>
+	<br/>
+
+	<h2>visione</h2>
+	<br/>
+	
+{% endblock %}
+{% block scripts %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#showCitizen").click(function(){
+				$.ajax({
+					url: '/API/citizen/'+$('#citizenUuid').val(),
+					method: "GET",
+					data: {},
+					success: function(citizen){
+						$('#citizenFirstName').html(citizen.firstName);
+						$('#citizenLastName').html(citizen.lastName);
+					},
+					dataType: 'json'
+				});
+			});
+		});
+	</script>
+{% endblock %}
