@@ -25,7 +25,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 ));
 
 $app->get('/', function ()  use ($app) {
-    return "ciao";
+    return $app['twig']->render('home.twig');
 });
 
 return $app;
