@@ -40,6 +40,7 @@ if ($isOnHeroku) {
 	    'charset'   => 'utf8'
 	];
 }
+    $app['debug'] = true;
 
 // services registration
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
