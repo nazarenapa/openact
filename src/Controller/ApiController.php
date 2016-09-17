@@ -21,6 +21,13 @@ class ApiController {
 
         $API = $app['controllers_factory'];
 
+        // citizen
+        $API->get('/citizen', function () use ($app) {
+            $citizenRepository = new CitizenRepository($app);
+            $citizens = $citizenRepository->getAll();
+            return $app->json($citizens);
+        });
+
         $API->get('/citizen/{uuid}', function ($uuid) use ($app) {
             $citizenRepository = new CitizenRepository($app);
             $citizen = $citizenRepository->getByUuid($uuid);

@@ -8,151 +8,38 @@
 	<h1>Questo è il potentissimo OpenAct!</h1>
 	<br/>
 
-	<h2>cittadino</h2>
-	<input id="citizenUuid" placeholder="uuid" />
-	<button id="showCitizen">mostra cittadino</button>
-	<div id="cittadino">
-		<p>first name: <span id="citizenFirstName"></span></p>
-		<p>last name: <span id="citizenLastName"></span></p>
-	</div>
-	<br/>
-
-	<h2>tavolo</h2>
-	<input id="tableUuid" placeholder="uuid" />
-	<button id="showTable">Mostra tavolo</button>
-	<div id="tavolo">
-		<p>table number: <span id="tableNumber"></span></p>
-		<p>last country: <span id="tableCountry"></span></p>
-	<br/>
-	
-	<h2>post-it</h2>
-	<input id="postitUuid" placeholder="uuid" />
-	<button id="showPostit">Mostra postit</button>
-	<div id="post-it">
-		<p>prompt: <span id="postitPrompt"></span></p>
-		<p>answer: <span id="postitAnswer"></span></p>
-		<p>answer: <span id="postitCategory"></span></p>
-	<br/>
-	<br/>
-
-	<h2>mini storie</h2>
-	<input id="ministoryUuid" placeholder="uuid" />
-	<button id="showMinistory">Mostra ministoria</button>
-	<div id="ministory">
-		<p>title: <span id="ministoryTitle"></span></p>
-		<p>description: <span id="ministoryDescription"></span></p>
-		<p>why is important for the community: <span id="ministoryWhyWho"></span></p>
-		<p>category: <span id="ministoryCategory"></span></p>
-	<br/>
-	<br/>
-
-	<h2>raw vision</h2>
-	<input id="rawvisionUuid" placeholder="uuid" />
-	<button id="showRawvision">Mostra Raw vision</button>
-	<div id="rawVision">
-		<p>Raw vision title: <span id="rawvisionTitle"></span></p>
-		<p>Raw vision description: <span id="rawvisionDescription"></span></p>
-	<br/>
-
-	<h2>vision</h2>
-	<input id="visionUuid" placeholder="uuid" />
-	<button id="showVision">Mostra Vision</button>
-	<div id="vision">
-		<p>Vision title: <span id="visionTitle"></span></p>
-		<p>Vision description: <span id="visionDescription"></span></p>
-		<p>Differences from today: <span id="visionDifferences"></span></p>
-		<p>Desirable for everyone / People Against / Concerns: <span id="visionNotes"></span></p>
-		<p>In short, what's the vision: <span id="visionShort"></span></p>
-	<br/>
-	
+	<h2>cittadini</h2>
+	<div id="citizens"></div>
 {% endblock %}
 {% block scripts %}
 	<script type="text/javascript">
 		$(document).ready(function(){
-			$("#showCitizen").click(function(){
-				$.ajax({
-					url: '/API/citizen/'+$('#citizenUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(citizen){
-						$('#citizenFirstName').html(citizen.firstName);
-						$('#citizenLastName').html(citizen.lastName);
-						$('#citizenCountry').html(citizen.country);
-						$('#citizenCity').html(citizen.city);
-						$('#citizenAge').html(citizen.age);
-						$('#citizenGender').html(citizen.gender);
-						$('#citizenOccupation').html(citizen.occupation);
-						$('#citizenEduLevel').html(citizen.edu_level);
-					},
-					dataType: 'json'
-				});
-			});
-			$("#showTable").click(function(){
-				$.ajax({
-					url: '/API/table/'+$('#tableUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(table){
-						$('#tableNumber').html(table.number);
-						$('#tableCountry').html(table.country);
-					},
-					dataType: 'json'
-				});
-			});
-			$("#showPostit").click(function(){
-				$.ajax({
-					url: '/API/postit/'+$('#postitUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(postit){
-						$('#postitPrompt').html(postit.prompt);
-						$('#postitAnswer').html(postit.answer);
-						$('#postitCategory').html(postit.category);
-					},
-					dataType: 'json'
-				});
-			});
-			$("#showMinistory").click(function(){
-				$.ajax({
-					url: '/API/ministories/'+$('#ministoryUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(ministory){
-						$('#ministoryTitle').html(ministory.title);
-						$('#ministoryDescription').html(ministory.description);
-						$('#ministoryWhyWho').html(ministory.whywho);
-						$('#ministoryCategory').html(ministory.category);
-					},
-					dataType: 'json'
-				});
-			});
-			$("#showRawvision").click(function(){
-				$.ajax({
-					url: '/API/rawvision/'+$('#rawvisionUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(rawvision){
-						$('#rawvisionTitle').html(rawvision.title);
-						$('#rawvisionDescription').html(rawvision.description);
-					},
-					dataType: 'json'
-				});
-			});
-			$("#showVision").click(function(){
-				$.ajax({
-					url: '/API/vision/'+$('#visionUuid').val(),
-					method: "GET",
-					data: {},
-					success: function(vision){
-						$('#visionTitle').html(vision.title);
-						$('#visionDescription').html(vision.description);
-						$('#visionDifferences').html(vision.differences);
-						$('#visionNotes').html(vision.notes);
-						$('#visionShort').html(vision.inshort);
-					},
-					dataType: 'json'
-				});
+			$.ajax({
+				url: '/API/citizen',
+				method: "GET",
+				data: {},
+				success: function(citizens){
+					var htmlString = "<ul>";
+					for (var iii = 0; iii < citizens.length; iii++) {
+						htmlString += "<li id=\""+citizens[iii].tableUuid+"\" onclick=\"getTable('"+citizens[iii].tableUuid+"')\">" + citizens[iii].firstName + "</li>";
+					}
+					htmlString += "</ul>";
+					$("#citizens").html(htmlString);
+				},
+				dataType: 'json'
 			});
 		});
+
+		function getTable(uuid) {
+			$.ajax({
+				url: '/API/table/'+uuid,
+				method: "GET",
+				data: {},
+				success: function(table){
+					console.log(table)
+				},
+				dataType: 'json'
+			});
+		}
 	</script>
 {% endblock %}

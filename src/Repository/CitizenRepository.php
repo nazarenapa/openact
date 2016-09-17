@@ -34,4 +34,15 @@ class CitizenRepository {
             return new Citizen($rows[0]);
         }
     }
+
+    function getAll() {
+        $rows = $this->db->fetchAll(
+            'SELECT * FROM citizens'
+        );
+        $citizens = [];
+        foreach ($rows as $row) {
+            array_push($citizens, new Citizen($row));
+        }
+        return $citizens;
+    }
 }
