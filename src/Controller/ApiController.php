@@ -27,6 +27,12 @@ class ApiController {
             return $app->json($citizen);
         });
 
+
+        $API->post('/citizen', function () use ($app) {
+            $citizenRepository = new CitizenRepository($app);
+            return $app->json($citizenRepository->insert($_POST));
+        });
+
         $API->get('/table/{uuid}', function ($uuid) use ($app) {
             $tableRepository = new TableRepository($app);
             $tables = $tableRepository->getByUuid($uuid);

@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\CitizenModel as Citizen;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class CitizenRepository {
 
@@ -12,7 +13,14 @@ class CitizenRepository {
     }
 
     function insert($citizen) {
-        return $this->db->insert('citizens', $citizen);
+        $uuidGenerator = new UuidGenerator();
+        $citizen['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('citizens', $citizen);
+            return ['uuid'=>$citizen['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new citizen."];
+        }
     }
 
     function getByUuid($uuid) {
