@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\PostitModel as Postit;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class PostitRepository {
 
@@ -12,7 +13,14 @@ class PostitRepository {
     }
 
     function insert($postits) {
-        return $this->db->insert('postits', $postits);
+        $uuidGenerator = new UuidGenerator();
+        $postits['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('postits', $postits);
+            return ['uuid'=>$postits['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new postit."];
+        }
     }
 
     function getByUuid($uuid) {

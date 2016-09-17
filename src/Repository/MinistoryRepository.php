@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\MinistoryModel as Ministory;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class MinistoryRepository {
 
@@ -12,7 +13,14 @@ class MinistoryRepository {
     }
 
     function insert($ministories) {
-        return $this->db->insert('ministories', $ministories);
+        $uuidGenerator = new UuidGenerator();
+        $ministories['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('ministories', $ministories);
+            return ['uuid'=>$ministories['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new ministory."];
+        }
     }
 
     function getByUuid($uuid) {

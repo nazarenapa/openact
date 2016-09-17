@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\TableModel as Table;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class TableRepository {
 
@@ -12,7 +13,14 @@ class TableRepository {
     }
 
     function insert($tables) {
-        return $this->db->insert('tables', $tables);
+        $uuidGenerator = new UuidGenerator();
+        $tables['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('tables', $tables);
+            return ['uuid'=>$tables['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new table."];
+        }
     }
 
     function getByUuid($uuid) {

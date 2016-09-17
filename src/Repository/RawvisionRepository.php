@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\RawvisionModel as Rawvision;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class RawvisionRepository {
 
@@ -12,7 +13,14 @@ class RawvisionRepository {
     }
 
     function insert($rawvisions) {
-        return $this->db->insert('rawvisions', $rawvisions);
+        $uuidGenerator = new UuidGenerator();
+        $rawvisions['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('rawvisions', $rawvisions);
+            return ['uuid'=>$rawvisions['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new raw vision."];
+        }
     }
 
     function getByUuid($uuid) {

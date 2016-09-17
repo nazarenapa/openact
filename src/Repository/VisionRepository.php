@@ -3,6 +3,7 @@
 namespace Openact\Repository;
 
 use Openact\Model\VisionModel as Vision;
+use Openact\Library\UuidGeneratorLibrary as UuidGenerator;
 
 class VisionRepository {
 
@@ -12,7 +13,14 @@ class VisionRepository {
     }
 
     function insert($visions) {
-        return $this->db->insert('visions', $visions);
+        $uuidGenerator = new UuidGenerator();
+        $visions['uuid'] = $uuidGenerator->v4();
+        try {
+            $this->db->insert('visions', $visions);
+            return ['uuid'=>$visions['uuid']];
+        } catch (Exception $error) {
+            return ['error'=>"Could not insert the new vision."];
+        }
     }
 
     function getByUuid($uuid) {
